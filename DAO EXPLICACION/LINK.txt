@@ -1,0 +1,1 @@
+http://www.genbetadev.com/java-j2ee/patrones-de-diseno-active-record-vs-dao

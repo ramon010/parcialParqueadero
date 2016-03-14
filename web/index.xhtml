@@ -1,0 +1,113 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:head>
+        <title>Facelet Title</title>
+    </h:head>
+    <h:body>
+        <p:growl id="growl" showDetail="true" sticky="true" />  
+        <h:panelGrid columns="1" cellpadding="5">
+            <p:commandButton value="Registrar Vehiculo" type="button" onclick="PF('vehiculo').show();" /> 
+            <p:commandButton value="Registrar Parqueadero" type="button" onclick="PF('parqueadero').show();" /> 
+            <p:commandButton value="Registrar Actividad" type="button" onclick="PF('actividad').show();" /> 
+        </h:panelGrid>
+
+        <p:dialog header="Effects" widgetVar="vehiculo" showEffect="explode" hideEffect="bounce" height="500">
+            <h:form id="formVehiculo">
+                <p:panel toggleable="true" header="Registro Del Vehiculo">
+                    <f:facet name="footer">
+                        <p:commandButton update=":formVehiculo" icon="ui-icon-disk" title="guardar vehiculo" actionListener="#{vehiculoBean.registrar()}" ></p:commandButton>
+                    </f:facet>
+                    <p:panelGrid columns="2">
+                        <p:outputLabel for="nombreVehiculo" value="nombre:"></p:outputLabel>
+                        <p:inputText required="true" id="nombreVehiculo" value="#{vehiculoBean.vehiculo.nombreDueno}"></p:inputText>
+                        <p:outputLabel for="marca" value="marca:"></p:outputLabel>
+                        <p:inputText id="marca" value="#{vehiculoBean.vehiculo.marca}"></p:inputText>
+                        <p:outputLabel for="placa" value="placa:"></p:outputLabel>
+                        <p:inputText id="placa" value="#{vehiculoBean.vehiculo.placa}"></p:inputText>
+                        <p:outputLabel for="descripcionVehiculo" value="descripcion:"></p:outputLabel>
+                        <p:inputText id="descripcionVehiculo" value="#{vehiculoBean.vehiculo.descripcionDelAuto}"></p:inputText>
+                    </p:panelGrid>  
+                </p:panel>
+            </h:form>
+        </p:dialog>
+
+        <p:dialog header="Effects" widgetVar="parqueadero" showEffect="explode" hideEffect="bounce" height="500">
+            <h:form id="formParqueadero">
+                <p:panel toggleable="true" header="Registro Del Parqueadero">
+                    <f:facet name="footer">
+                        <p:commandButton update=":formParqueadero" icon="ui-icon-disk" title="guardar Parqueadero" actionListener="#{parqueaderoBean.registrar()}" ></p:commandButton>
+                    </f:facet>
+                    <p:panelGrid columns="2">
+                        <p:outputLabel for="nombreParqueadero" value="nombre:"></p:outputLabel>
+                        <p:inputText required="true" id="nombreParqueadero" value="#{parqueaderoBean.parqueadero.nombre}"></p:inputText>
+                        <p:outputLabel for="descripcionParqueadero" value="descripcion:"></p:outputLabel>
+                        <p:inputText id="descripcionParqueadero" value="#{parqueaderoBean.parqueadero.descripcion}"></p:inputText>
+                        <p:outputLabel for="valorPorHora" value="valor por hora:"></p:outputLabel>
+                        <p:inputText id="valorPorHora" value="#{parqueaderoBean.parqueadero.valorPorHora}"></p:inputText>
+                    </p:panelGrid>  
+                </p:panel>
+            </h:form>
+        </p:dialog>
+
+        <p:dialog header="Effects" widgetVar="actividad" showEffect="explode" hideEffect="bounce" height="500">
+            <h:form id="formActividad">
+                <p:panel toggleable="true" header="Registro Del Actividad">
+
+                    <p:panelGrid columns="2">
+                        <p:outputLabel for="parqueaderoActivdad" value="parqueadero:"></p:outputLabel>
+                        <p:selectOneMenu id="parqueaderoActivdad" label="parqueaderoActivdad" filter="true" filterMatchMode="startsWith" value="#{parqueaderoBean.parqueadero.id}" effect="bold">
+                            <f:selectItem itemLabel="Select Parqueadero" itemValue=""/>
+                            <f:selectItems value="#{parqueaderoBean.listar}"
+                                           var="listarParqueadero"
+                                           itemValue="#{listarParqueadero.id}"/>
+                        </p:selectOneMenu>
+                        <p:outputLabel for="vehiculoActivdad" value="vehiculo:"></p:outputLabel>
+                        <p:selectOneMenu id="vehiculoActivdad" label="vehiculoActivdad" filter="true" filterMatchMode="startsWith" value="#{vehiculoBean.vehiculo.id}" effect="bold">
+                            <f:selectItem itemLabel="Select vehiculo" itemValue=""/>
+                            <f:selectItems value="#{vehiculoBean.listar}"
+                                           var="listarVehiculo"
+                                           itemValue="#{listarVehiculo.id}"/>
+                        </p:selectOneMenu>
+                        <p:outputLabel for="horasEntrada" value="horasEntradas"></p:outputLabel>
+                        <p:calendar id="horasEntrada" value="#{actividadBean.actividad.horaEntrada}" pattern="MM/dd/yyyy HH:mm:ss">
+                            <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                        </p:calendar>
+                        <p:outputLabel for="horasEntrada" value="hora:"></p:outputLabel>
+                        <p:inputText id="valorPorHora" value="#{actividadBean.actividad.horas}"></p:inputText>
+                        <p:outputLabel for="ubicacion" value="ubicacion"></p:outputLabel>
+                        <p:inputText id="ubicacion" value="#{actividadBean.actividad.ubicacion}"></p:inputText>
+                    </p:panelGrid>  
+
+                    <f:facet name="footer">
+                        <p:commandButton update=":formActividad,:tabla" icon="ui-icon-disk" title="guardar Actividad" actionListener="#{actividadBean.registrar(listarVehiculo,listarParqueadero)}" ></p:commandButton>
+                    </f:facet>
+                </p:panel>
+            </h:form>
+        </p:dialog>
+
+
+        <p:dataTable id="tabla" var="item" value="#{actividadBean.listar}">
+            <p:column headerText="parqueadero">
+                <h:outputText value="#{item.parqueadero.nombre}"></h:outputText>
+            </p:column>
+            <p:column headerText="vehiculo">
+                <h:outputText value="#{item.vehiculo.marca}"></h:outputText>
+            </p:column>
+            <p:column headerText="horas">
+                <h:outputText value="#{item.horas}"></h:outputText>
+            </p:column>
+            <p:column headerText="hora de entrada">
+                <h:outputText value="#{item.horaEntrada}"></h:outputText>
+            </p:column>
+            <p:column headerText="ubicacion">
+                <h:outputText value="#{item.ubicacion}"></h:outputText>
+            </p:column>
+        </p:dataTable>
+
+    </h:body>
+</html>
+
